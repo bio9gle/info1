@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>설명서 (KOR)</title>
+  <style>
+    :root {
+      --ratio: 16 / 9;   /* 영상 비율. 재생 준비되면 실제 값으로 교체됩니다 */
+      --chrome: 120px;   /* 제목과 여백이 차지하는 세로 공간 */
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      padding: 16px max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.05rem, 3.5vw, 1.5rem);
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .video-container {
+      /* 가로 폭, 최대 폭, 남은 세로 높이 중 가장 작은 값에 맞춤 */
+      width: min(100%, 900px, calc((100dvh - var(--chrome)) * (var(--ratio))));
+      aspect-ratio: var(--ratio);
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #000;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background-color: #000;
+    }
+
+    .fallback {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #9e9e9e;
+      text-align: center;
+    }
+
+    .fallback a { color: #9e9e9e; }
+
+    /* 휴대폰 가로 모드처럼 세로가 짧을 때 */
+    @media (orientation: landscape) and (max-height: 480px) {
+      :root { --chrome: 64px; }
+      body { padding: 8px; gap: 8px; }
+      h1 { font-size: 0.95rem; }
+      .video-container { border-radius: 8px; }
+      .fallback { display: none; }
+    }
+
+    /* 좁은 화면 */
+    @media (max-width: 420px) {
+      :root { --chrome: 104px; }
+      .video-container { border-radius: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>설명서 (KOR)</h1>
+
+  <div class="video-container">
+    <video id="player" controls playsinline preload="metadata">
+      <source src="%EC%84%A4%EB%AA%85%EC%84%9C%28KOR%29.mp4" type="video/mp4">
+      사용 중인 브라우저가 비디오 태그를 지원하지 않습니다.
+    </video>
+  </div>
+
+  <p class="fallback">
+    재생이 되지 않으면
+    <a href="%EC%84%A4%EB%AA%85%EC%84%9C%28KOR%29.mp4" download>영상 파일 직접 내려받기</a>
+  </p>
+
+  <script>
+    // 영상의 실제 해상도를 읽어 비율을 맞춥니다 (세로 영상, 4:3 등도 여백 없이 표시)
+    var player = document.getElementById('player');
+
+    function applyRatio() {
+      if (player.videoWidth && player.videoHeight) {
+        document.documentElement.style.setProperty(
+          '--ratio',
+          player.videoWidth + ' / ' + player.videoHeight
+        );
+      }
+    }
+
+    player.addEventListener('loadedmetadata', applyRatio);
+    if (player.readyState >= 1) applyRatio();
+  </script>
+</body>
+</html>
